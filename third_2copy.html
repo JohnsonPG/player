@@ -23,7 +23,7 @@
 			<div data-role="content">
 				
 				<img src="img/tu1.png" />
-				<audio src="yifenqian.mp3" id="audio" controls></audio>
+				<audio  id="audio" controls></audio>
 				
 				<h3>一分钱</h3>
 				<div data-role="controlgroup" data-type="horizontal">
@@ -76,21 +76,18 @@
 		 *当文档一加载就要执行
 		 */
 		$(function(){
-			let str=location.href
-			/*完整的拆法*/
-			/*地址形如:http://third.html?mp3=aa.mp3
-			 * 先以?拆分，分成左右，左面是网址干掉，右边是参数的字符串,所以留下的是下标为1--->arr[1]
-			 */
-			arr=str.split("?")
-			/*
-			 * 第二步再拆，多参数以&拆，单参数用=拆
-			 * 我们这个例子用等号拆
-			 */
-			audioname=arr[1].split("=")
-			/*
-			 * 我们要的值是audioname第二个索引audioname[1]
-			 */
-			$("#audio").attr("src","http://192.168.7.221/song/"+audioname[1])
+			/*取存储的键值*/
+			yinyue=window.sessionStorage.getItem("yinyue")
+			yinyuea=window.localStorage.getItem("yinyue")
+			console.log(yinyue)
+			console.log(yinyuea)
+			/*把值赋给音乐属性*/
+			$("#audio").attr("src","http://192.168.7.221/song/"+yinyuea)
+			/*删除localStorage的键yinyue值 */
+			window.localStorage.removeItem("yinyue")
+			/*清除sessionStorage里面所有的值*/
+			window.sessionStorage.clear()
+			
 		})
 	</script>
 		</div>

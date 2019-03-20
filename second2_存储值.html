@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>音乐播放器</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<script src="js/jquery-1.7.1.min.js"></script>
+		<link rel="stylesheet" href="css/jquery.mobile.min.css">
+		<script src="js/jquery.mobile.min.js"></script>		
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		<div data-role="page">
+			<div data-role="header" data-theme="b" data-position="fixed">
+				<a href="#">返回</a>
+				<h1>音乐播放器</h1>
+			</div>
+			<!--新版本变成data-role="main"-->
+			<div data-role="content">
+				<ul data-role="listview" class="mylist">
+					<!--<li><a href="third.html">
+						<img src="img/tu1.png"  />
+						<h3>一分钱</h3>
+						<p>这是一个精典的歌</p></a>
+					</li>-->
+					
+				</ul>
+			</div>
+			<div data-role="footer" data-position="fixed" data-theme="b">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" data-icon="home">首页</a></li>
+						<li><a href="#" data-icon="grid">分类</a></li>
+						<li><a href="#" data-icon="star">收藏</a></li>
+						<li><a href="#" data-icon="gear">设置 </a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		$.post("http://localhost:3000/songs",{verify:'1'},function(result){
+			console.log(result)
+			var songlist=result.song_list;
+			var len=songlist.length;
+			for(let i=0;i<len;i++){
+				/*下面建立元素，相当于js中 createElement*/
+				var oli=$("<li>")
+				var oimg=$("<img/>")
+				var oh3=$("<h3>")
+				var op=$("<p>")
+				let oa=$("<a data-ajax=false>")
+				/*下面设置一下对应元素的属性*/
+				oimg.attr("src",songlist[i].pic_small)
+				oh3.text(songlist[i].title)
+				op.text(songlist[i].author)
+			
+				/*加载歌曲的ajax*/
+				song_id=songlist[i].song_id;
+				$.post("http://localhost:3000/playsongs",{id:song_id},function(res){
+					console.log(res)
+					if(!res.error){
+						let mp3=res.bitrate.file_link;
+						/*第二种不传，把数据存起来
+						 存在h5的window.sessionStorage会话存储
+						 h5自定义属性
+						 jqm原理:
+						 
+						 * */
+						/*oa.attr("href","third_2copy.html")*/
+						/*此语句是给oa加空链接，因为他不需要链接到地址，需要点击后发生动作*/
+						oa.attr("href","#")
+						/*为了解决列表中的每个条目都能有自己的歌曲，采用自定义属性的方法去先数据存在标签里
+						 解决a标签和mp3的对应关系,自定义属性data-mp3
+						 * */
+						oa.attr("data-mp3",mp3)
+						
+						
+						
+					}
+					
+				})
+				/*添加到对应容器上*/
+				oa.append(oimg)
+				oa.append(oh3)
+				oa.append(op)
+				/*因为是空链接，需要定义a标签的点击方法 */
+				oa.click(function(){
+					/*console.log(oa.attr("data-mp3"))*/
+					/*把数据同时存在sessionStorage和localStorage,存的键值为yinyue*/
+					
+					window.sessionStorage.setItem("yinyue",oa.attr("data-mp3"))
+					window.localStorage.setItem("yinyue",oa.attr("data-mp3"))
+					/*需要页面跳转*/
+					window.location.href="third_2copy.html"
+					
+				})
+				oli.append(oa)
+				$(".mylist").append(oli)
+			}
+			/*jqm特点，列表动态添加元素，一定要进行listview('refresh')刷新, 更新列表*/
+			$(".mylist").listview('refresh')
+		})
+	</script>
+</html>
