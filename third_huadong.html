@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>音乐播放器</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<script src="js/jquery-1.7.1.min.js"></script>
+		<link rel="stylesheet" href="css/jquery.mobile.min.css">
+		<script src="js/jquery.mobile.min.js"></script>		
+		<style>
+			img{
+				width:100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div data-role="page">
+			<div data-role="header" data-theme="b" data-position="fixed">
+				<a href="#">返回</a>
+				<h1>音乐播放器</h1>
+			</div>
+			<!--新版本变成data-role="main"-->
+			<div data-role="content">
+				
+				<img src="img/tu1.png" />
+				<audio src="yifenqian.mp3" id="audio" controls></audio>
+				
+				<h3>一分钱</h3>
+				<div data-role="controlgroup" data-type="horizontal">
+					<a href="#" data-role="button" id="play">播放</a>
+					<a href="#" data-role="button" id="pause">暂停</a>
+					<a href="#" data-role="button" id="muted">静音</a>
+					<a href="#" data-role="button" id="volup">音量+</a>
+					<a href="#" data-role="button" id="voldown">音量-</a>
+				</div>
+				<input type="range" min=0 max=100 value=0 />
+			</div>
+			<div data-role="footer" data-position="fixed" data-theme="b">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" data-icon="home">首页</a></li>
+						<li><a href="#" data-icon="grid">分类</a></li>
+						<li><a href="#" data-icon="star">收藏</a></li>
+						<li><a href="#" data-icon="gear">设置 </a></li>
+					</ul>
+				</div>
+			</div>
+			<script>
+		$("#play").click(function(){
+			console.log($("audio"))
+			
+			/*$("audio")[0].play()*/
+			$("audio").trigger("play")
+			
+			
+		})
+		$("#pause").click(function(){
+			$("audio")[0].pause()
+		})
+		$("#muted").click(function(){
+			$("audio")[0].muted=!$("audio")[0].muted
+		})
+		$("#volup").click(function(){
+			$("audio")[0].volume+=0.1
+			if($("audio")[0].volume>1){
+				$("audio")[0].volume=1
+			}
+		})
+		$("#voldown").click(function(){
+			$("audio")[0].volume-=0.1
+			if($("audio")[0].volume<0){
+				$("audio")[0].volume=0
+			}
+		})
+		$(function(){
+			/*给range滑块做一个数值改变事件，大部分input都有change事件,改变音频的位置*/
+			$("input").change(function(){
+				/*公式是滑块的位置占总长度的百分比，用这个百分比乘以总时间，就是具体播放位置*/
+				console.log(1)
+				$("#audio")[0].currentTime=($("input").val()/100)*$("#audio")[0].duration;
+			})
+
+		})
+		setInterval(function(){
+			console.log($("#audio")[0].currentTime)
+			console.log($("#audio")[0].duration)
+			let pos=($("#audio")[0].currentTime/$("#audio")[0].duration)*100
+			console.log(pos)
+			$("input").val(pos)
+			/*$("input").slider('refresh')*/
+			console.log($("input[type=range]"))
+			$("input").slider('refresh')
+			/*let len=$(".ui-slider-track").width()
+			$(".ui-slider-handle").animate({"left":pos*(len/100)+"px"},2000)*/
+		},2000)
+		/*document.getElementById("audio").ontimeupdate=function(){
+			let pos=($("#audio")[0].currentTime/$("#audio")[0].duration)*100
+			$("input").val(pos)
+			$("input").slider('refresh')
+		}*/
+			</script>
+		</div>
+		
+	</body>
+	
+</html>
